@@ -5,10 +5,10 @@
 #include <iostream>
 int main()
 {
-    float sigma = 15;
+    float sigma = 1;
 
-    // Creer une image 3D avec un type de pixel unsigned short
-    typedef itk::Image< unsigned short, 2 > ImageType;
+    // Creer une image 2D avec un type de pixel unsigned char
+    typedef itk::Image< unsigned char, 2 > ImageType;
     ImageType::Pointer image = ImageType::New();
     ImageType::Pointer imageFilt = ImageType::New();
 
@@ -16,7 +16,7 @@ int main()
     ReaderType::Pointer reader = ReaderType::New();
     reader->SetFileName( "../data/lena.jpg" );
     reader->Update();
-    //image = reader->GetOutput();
+    image = reader->GetOutput();
 
 
     //Read the [10,10] pixel
@@ -40,8 +40,8 @@ int main()
     typedef itk::ImageFileWriter<ImageType> WriterType ;
 
     WriterType::Pointer writer = WriterType::New();
-    writer->SetFileName("new_image.png");
-    writer->SetInput(reader->GetOutput());
+    writer->SetFileName("new_image.jpg");
+    writer->SetInput(imageFilt);
     writer->Update();
 
     return 0;
