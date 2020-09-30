@@ -26,23 +26,24 @@ int main()
 
     // std::cout <<  (float) image->GetPixel(index) << std::endl;
 
-    typedef itk::RecursiveGaussianImageFilter< ImageType> FilterType;
-    FilterType::Pointer GaussFilt = FilterType::New();
-    GaussFilt->SetInput(image);
-    GaussFilt->SetSigma(sigma);
-    GaussFilt->Update();
+    //Exercice 4
+    // typedef itk::RecursiveGaussianImageFilter< ImageType> FilterType;
+    // FilterType::Pointer GaussFilt = FilterType::New();
+    // GaussFilt->SetInput(image);
+    // GaussFilt->SetSigma(sigma);
+    // GaussFilt->Update();
 
-    imageFilt = GaussFilt->GetOutput();
+    // imageFilt = GaussFilt->GetOutput();
     
+    //Exercice 5
 
+    //Exercice 3
+    // typedef itk::ImageFileWriter<ImageType> WriterType ;
+    // WriterType::Pointer writer = WriterType::New();
+    // writer->SetFileName("new_image.jpg");
+    // writer->SetInput(imageFilt);
+    // writer->Update();
 
-
-    typedef itk::ImageFileWriter<ImageType> WriterType ;
-
-    WriterType::Pointer writer = WriterType::New();
-    writer->SetFileName("new_image.jpg");
-    writer->SetInput(imageFilt);
-    writer->Update();
 
     return 0;
 }
