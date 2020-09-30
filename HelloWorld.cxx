@@ -64,6 +64,11 @@ int main()
     
     typedef itk::RegularStepGradientDescentOptimizer optimizerType;
     optimizerType::Pointer optimizer = optimizerType::New();
+
+    optimizer->SetNumberOfIterations(2000);
+    optimizer->SetMinimumStepLength(1);
+    optimizer->SetMaximumStepLength(10);
+
     typedef itk::TranslationTransform<double, 2> transformType;
     transformType::Pointer transform = transformType::New();
     typedef itk::MeanSquaresImageToImageMetric<ImageType,ImageType> metricType;
