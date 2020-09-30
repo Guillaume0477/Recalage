@@ -2,6 +2,13 @@
 #include <itkImageFileReader.h>
 #include "itkImageFileWriter.h"
 #include <itkRecursiveGaussianImageFilter.h>
+#include <itkTranslationtransform.h>
+#include <itkMeanSquaresImageToImageMetric.h>
+#include <itkLinearInterpolateImageFunction.h>
+#include <itkRegularStepGradientDescentOptimizer.h>
+#include <itkImageRegistrationMethod.h>
+#include <itkResampleImageFilter.h>
+
 #include <iostream>
 int main()
 {   
@@ -38,8 +45,12 @@ int main()
     
     //Exercice 5
 
-    //TODO lire Image Moving, image Fix
 
+    typedef itk::RegularStepGradientDescentOptimizer optimizer;
+    typedef itk::TranslationTransform<float, 2> transform;
+    typedef itk::MeanSquaresImageToImageMetric<ImageType,ImageType> metric;
+    typedef itk::LinearInterpolateImageFunction<ImageType, double> interpolator;
+    typedef itk::ResampleImageFilter<ImageTYpe, ImageType> ResampleFilterType;
 
     typedef itk::ImageRegistrationMethod<ImageType,ImageType> RegistrationType;
     registration->SetOptimizer(optimizer);
@@ -48,8 +59,7 @@ int main()
     registration->SetMetric( metric );
     registration->SetFixedImage( fixedImageReader->GetOutput() );
     registration->SetMovingImage( movingImage );
-    registration->SetFixedImageRegion(
-    fixedImageReader->GetOutput()->GetBufferedRegion() );
+    registration->SetFixedImageRegion(fixedImageReader->GetOutput()->GetBufferedRegion() );
 
     typedef RegistrationType::ParametersType ParametersType;
     ParametersType initialParameters( transform->GetNumberOfParameters() );
@@ -68,6 +78,18 @@ int main()
         std::cout << err << std::endl;
         return -1;
     }
+
+    ParametersType finalParameters = registration->GetLastTransformParameters();
+    transform::Pointer finalTransform = transform::New();
+    finalTransform->SetParameters( finalParameters );
+    ResampleFilterType::Pointer resample = ResampleFilterType::New();
+    resample->SetTransform( finalTransform );
+    resample->SetInput( movingImage );
+    resample->SetSize( fixedImage->GetLargestPossibleRegion().GetSize() );
+    resample->SetOutputOrigin( fixedImage->GetOrigin() );
+    resample->SetOutputSpacing( fixedImage->GetSpacing() );
+    resample->SetDefaultPixelValue( 0 );
+
 
     //Exercice 3
     // typedef itk::ImageFileWriter<ImageType> WriterType ;
