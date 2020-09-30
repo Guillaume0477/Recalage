@@ -39,42 +39,64 @@ int main()
     //Exercice 5
 
     //TODO lire Image Moving, image Fix
+    typedef itk::Image< unsigned char, 2 > ImageType;
+    ImageType::Pointer fixedImage = ImageType::New();
+    ImageType::Pointer movingImage = ImageType::New();
+
+    typedef itk::ImageFileReader< ImageType > ReaderType;
+    ReaderType::Pointer reader1 = ReaderType::New();
+    //BrainProtonDensitySliceShifted13x17y.png
+    reader1->SetFileName( "../data/BrainProtonDensitySliceBorder20.png" );
+    reader1->Update();
+    fixedImage = reader1->GetOutput();
+
+    ReaderType::Pointer reader2 = ReaderType::New();
+    reader2->SetFileName( "../data/BrainProtonDensitySliceShifted13x17y.png" );
+    reader2->Update();
+    movingImage = reader2->GetOutput();
 
 
-    typedef itk::ImageRegistrationMethod<ImageType,ImageType> RegistrationType;
-    registration->SetOptimizer(optimizer);
-    registration->SetTransform(transform);
-    registration->SetInterpolator( interpolator );
-    registration->SetMetric( metric );
-    registration->SetFixedImage( fixedImageReader->GetOutput() );
-    registration->SetMovingImage( movingImage );
-    registration->SetFixedImageRegion(
-    fixedImageReader->GetOutput()->GetBufferedRegion() );
 
-    typedef RegistrationType::ParametersType ParametersType;
-    ParametersType initialParameters( transform->GetNumberOfParameters() );
-    initialParameters[0] = 0.0;
-    initialParameters[1] = 0.0;
-    // Initial offset in mm along X
-    // Initial offset in mm along Y
-    registration->SetInitialTransformParameters( initialParameters );
-    try
-    {
-        registration->StartRegistration();
-    }
-        catch( itk::ExceptionObject & err )
-    {
-        std::cout << "ExceptionObject caught !" << std::endl;
-        std::cout << err << std::endl;
-        return -1;
-    }
+    // typedef itk::ImageRegistrationMethod<ImageType,ImageType> RegistrationType;
+    // registration->SetOptimizer(optimizer);
+    // registration->SetTransform(transform);
+    // registration->SetInterpolator( interpolator );
+    // registration->SetMetric( metric );
+    // registration->SetFixedImage( fixedImage );
+    // registration->SetMovingImage( movingImage );
+    // registration->SetFixedImageRegion(
+    // fixedImageReader->GetOutput()->GetBufferedRegion() );
+
+    // typedef RegistrationType::ParametersType ParametersType;
+    // ParametersType initialParameters( transform->GetNumberOfParameters() );
+    // initialParameters[0] = 0.0;
+    // initialParameters[1] = 0.0;
+    // // Initial offset in mm along X
+    // // Initial offset in mm along Y
+    // registration->SetInitialTransformParameters( initialParameters );
+    // try
+    // {
+    //     registration->StartRegistration();
+    // }
+    //     catch( itk::ExceptionObject & err )
+    // {
+    //     std::cout << "ExceptionObject caught !" << std::endl;
+    //     std::cout << err << std::endl;
+    //     return -1;
+    // }
 
     //Exercice 3
-    // typedef itk::ImageFileWriter<ImageType> WriterType ;
-    // WriterType::Pointer writer = WriterType::New();
-    // writer->SetFileName("new_image.jpg");
-    // writer->SetInput(imageFilt);
-    // writer->Update();
+    typedef itk::ImageFileWriter<ImageType> WriterType ;
+    WriterType::Pointer writer1 = WriterType::New();
+    writer1->SetFileName("new_image_1.jpg");
+    writer1->SetInput(fixedImage);
+    writer1->Update();
+
+    WriterType::Pointer writer2 = WriterType::New();
+    writer2->SetFileName("new_image_2.jpg");
+    writer2->SetInput(movingImage);
+    writer2->Update();
+
 
 
     return 0;
